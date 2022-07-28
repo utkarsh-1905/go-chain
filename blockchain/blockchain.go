@@ -23,7 +23,7 @@ func GetLatestBlock() block.Block {
 	return Blockchain[len(Blockchain)-1]
 }
 
-func CreateBlock() block.Block {
+func CreateBlock(mnr string) block.Block {
 	var chash string
 	txs, _ := json.Marshal(transactions.Pool)
 	fmt.Println(string(txs))
@@ -38,7 +38,7 @@ func CreateBlock() block.Block {
 		CurrHash:             chash,
 		Timestamp:            time.Now(),
 		NumberOfTransactions: len(transactions.Pool),
-		Miner:                "utkarsh",
+		Miner:                mnr,
 		Nonce:                10,
 		Transactions:         transactions.Pool,
 	}

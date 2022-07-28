@@ -10,9 +10,9 @@ import (
 func main() {
 	blockchain.Genesis()
 	transactions.CreateTransaction("utkarsh", "utkarsh", 10, "hello")
-	blockchain.CreateBlock()
+	blockchain.CreateBlock("utkarsh")
 	transactions.CreateTransaction("harish", "tushar", 7, "helu")
-	blockchain.CreateBlock()
+	blockchain.CreateBlock("utkarsh")
 	bc := blockchain.Blockchain
 	fmt.Println(bc)
 }

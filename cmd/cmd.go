@@ -12,7 +12,8 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name:    "Go-Chain CLI",
+		Name:    "go-chain",
+		Usage:   "A command line interface for Go-Chain",
 		Version: "0.1.0",
 		Commands: []*cli.Command{
 			{
@@ -66,6 +67,28 @@ func main() {
 					bc := blockchain.Blockchain
 					fmt.Println(bc)
 					return nil
+				},
+			},
+			{
+				Name:  "block",
+				Usage: "Create a new block",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "miner",
+						Aliases:  []string{"m"},
+						Usage:    "The miner of the block",
+						Required: true,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					if c.String("miner") == "" {
+						fmt.Println("Please specify the miner of the block")
+						return nil
+					} else {
+						blockchain.CreateBlock(c.String("miner"))
+						fmt.Println("Block Created")
+						return nil
+					}
 				},
 			},
 		},
