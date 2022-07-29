@@ -11,7 +11,7 @@
 8. Create a feature to view the blocks 
 
 10. Create a block explorer
-
+11. Create a database to store all the accounts for reference which has balance>1 (to be used in the block explorer). It will also act as a node.
 ---
 
 ### Links

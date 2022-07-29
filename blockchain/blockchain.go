@@ -47,25 +47,25 @@ func GetLatestBlock() block.Block {
 }
 
 func CreateBlock(mnr string) block.Block {
-	blockchain := helpers.ReadAndUnmarshallBlockchain()
+	// blockchain := helpers.ReadAndUnmarshallBlockchain()
 	var chash string
 	block := block.Block{
 		BlockNumber:          (GetLatestBlock().BlockNumber) + 1,
 		ParentHash:           GetLatestBlock().CurrHash,
 		Timestamp:            time.Now().Unix(),
-		NumberOfTransactions: len(transactions.Pool),
+		NumberOfTransactions: len(transactions.Pool()),
 		Miner:                mnr,
 		Nonce:                10,
-		Transactions:         transactions.Pool,
+		Transactions:         transactions.Pool(),
 	}
 	blockData, _ := json.Marshal(block)
 	h := sha256.New()
 	h.Write([]byte(string(blockData)))
 	chash = fmt.Sprintf("%x", h.Sum(nil)) //thanks copilot
 	block.CurrHash = chash
-	blockchain = append(blockchain, block)
-	transactions.Pool = nil
-	bchain, _ := json.MarshalIndent(blockchain, "", "\t")
-	_ = ioutil.WriteFile("blockchain.json", bchain, 0644)
+	// blockchain = append(blockchain, block)
+	// transactions.Pool = nil
+	// bchain, _ := json.MarshalIndent(blockchain, "", "\t")
+	// _ = ioutil.WriteFile("blockchain.json", bchain, 0644)
 	return block
 }

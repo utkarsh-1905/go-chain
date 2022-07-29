@@ -14,3 +14,9 @@ func ReadAndUnmarshallBlockchain() []block.Block {
 	_ = json.Unmarshal(content, &blockchain)
 	return blockchain
 }
+
+func ReadFileWithName(name string) string {
+	content, err := ioutil.ReadFile(name + ".json")
+	HandleErr(err)
+	return string(content)
+}
