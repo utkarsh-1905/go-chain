@@ -9,6 +9,9 @@ type Transaction struct {
 
 var Pool = make([]Transaction, 0)
 
+//create transaction or transfer tokens, and send it to Pool
+//If transaction mined, the wallet file will show the updated balance
+
 func CreateTransaction(to string, from string, value int, data string) Transaction {
 	tx := Transaction{to, from, value, data}
 	Pool = append(Pool, tx)

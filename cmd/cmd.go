@@ -97,9 +97,17 @@ func main() {
 			{
 				Name:  "wallet",
 				Usage: "To create a new wallet on chain",
-				Action: func(ctx *cli.Context) error {
-					wallet.GenerateWallet()
-					spew.Dump("Wallet created, check the mywallet.json file in the root folder")
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "name",
+						Aliases:  []string{"n"},
+						Usage:    "Name of wallet",
+						Required: true,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					wallet.GenerateWallet(c.String("name"))
+					spew.Dump("Wallet created, check the " + c.String("name") + ".json file in the root folder")
 					spew.Dump("Use the public key for transactions")
 					return nil
 				},

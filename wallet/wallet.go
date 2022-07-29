@@ -18,7 +18,7 @@ type Wallet struct {
 	Transactions []transactions.Transaction `json:"transactions"`
 }
 
-func GenerateWallet() {
+func GenerateWallet(name string) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	helpers.HandleErr(err)
 	pubKey, _ := privateKey.PublicKey.X.MarshalJSON()
@@ -29,5 +29,5 @@ func GenerateWallet() {
 		PublicKey:  pubKey,
 	}
 	wl, _ := json.MarshalIndent(wallet, "", "\t")
-	_ = ioutil.WriteFile("mywallet.json", wl, 0644)
+	_ = ioutil.WriteFile(name+".json", wl, 0644)
 }
