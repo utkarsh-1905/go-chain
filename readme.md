@@ -9,3 +9,9 @@
 6. [API] Create a feature to view the balance of a user
 7. Create a feature to view the transactions of a user
 8. Create a feature to view the blocks 
+
+---
+
+### Links
+
+1. [Pos in Go](https://mycoralhealth.medium.com/code-your-own-proof-of-stake-blockchain-in-go-610cd99aa658)

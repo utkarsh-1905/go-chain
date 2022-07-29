@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/urfave/cli/v2"
+	"github.com/utkarsh-1905/go-chain/block"
 	"github.com/utkarsh-1905/go-chain/blockchain"
 	"github.com/utkarsh-1905/go-chain/transactions"
 )
@@ -60,15 +64,17 @@ func main() {
 					return nil
 				},
 			},
-			// {
-			// 	Name:  "show",
-			// 	Usage: "Show the current Blockchain",
-			// 	Action: func(c *cli.Context) error {
-			// 		bc := blockchain.Blockchain
-			// 		fmt.Println(bc)
-			// 		return nil
-			// 	},
-			// },
+			{
+				Name:  "show",
+				Usage: "Show the current Blockchain",
+				Action: func(c *cli.Context) error {
+					bchain, _ := ioutil.ReadFile("blockchain.json")
+					var bch []block.Block
+					_ = json.Unmarshal(bchain, &bch)
+					spew.Dump(bch)
+					return nil
+				},
+			},
 			{
 				Name:  "block",
 				Usage: "Create a new block",
