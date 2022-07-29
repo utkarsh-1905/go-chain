@@ -60,15 +60,15 @@ func main() {
 					return nil
 				},
 			},
-			{
-				Name:  "show",
-				Usage: "Show the current Blockchain",
-				Action: func(c *cli.Context) error {
-					bc := blockchain.Blockchain
-					fmt.Println(bc)
-					return nil
-				},
-			},
+			// {
+			// 	Name:  "show",
+			// 	Usage: "Show the current Blockchain",
+			// 	Action: func(c *cli.Context) error {
+			// 		bc := blockchain.Blockchain
+			// 		fmt.Println(bc)
+			// 		return nil
+			// 	},
+			// },
 			{
 				Name:  "block",
 				Usage: "Create a new block",

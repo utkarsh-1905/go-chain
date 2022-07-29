@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	blockchain.Genesis()
+	// blockchain.Genesis()
 	transactions.CreateTransaction("utkarsh", "utkarsh", 10, "hello")
 	b1 := blockchain.CreateBlock("utkarsh")
 	b1json, _ := json.Marshal(b1)
@@ -20,7 +20,4 @@ func main() {
 	b2json, _ := json.Marshal(b2)
 	fmt.Println(string(b2json))
 	fmt.Println("----------------------------------------------------")
-	bc := blockchain.Blockchain
-	bcjson, _ := json.Marshal(bc)
-	fmt.Println(string(bcjson))
 }

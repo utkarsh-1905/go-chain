@@ -4,32 +4,48 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/utkarsh-1905/go-chain/block"
 	"github.com/utkarsh-1905/go-chain/transactions"
 )
 
-var Blockchain = make([]block.Block, 0)
-
 func Genesis() []block.Block {
 	var tx []transactions.Transaction
 	tx = append(tx, transactions.Transaction{To: "", From: "", Value: 1000, Data: ""})
-	Blockchain = append(Blockchain, block.Block{BlockNumber: 1, ParentHash: "", CurrHash: "", Timestamp: time.Now().Unix(), NumberOfTransactions: 0, Miner: "", Nonce: 0, Transactions: tx})
-	return Blockchain
+	var blockchain = make([]block.Block, 0)
+	blockchain = append(blockchain, block.Block{BlockNumber: 1, ParentHash: "", CurrHash: "", Timestamp: time.Now().Unix(), NumberOfTransactions: 0, Miner: "", Nonce: 0, Transactions: tx})
+	bchain, _ := json.MarshalIndent(blockchain, "", "\t")
+	_ = ioutil.WriteFile("blockchain.json", bchain, 0644)
+	return blockchain
 }
 
 func GetLatestBlock() block.Block {
-	return Blockchain[len(Blockchain)-1]
+	content, err := ioutil.ReadFile("blockchain.json")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	var blockchain []block.Block
+	_ = json.Unmarshal(content, &blockchain)
+	return blockchain[len(blockchain)-1]
 }
 
 func CreateBlock(mnr string) block.Block {
+	content, err := ioutil.ReadFile("blockchain.json")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	var blockchain []block.Block
+	_ = json.Unmarshal(content, &blockchain)
 	var chash string
-	t := int64(time.Now().Unix())
 	block := block.Block{
 		BlockNumber:          (GetLatestBlock().BlockNumber) + 1,
 		ParentHash:           GetLatestBlock().CurrHash,
-		Timestamp:            t,
+		Timestamp:            time.Now().Unix(),
 		NumberOfTransactions: len(transactions.Pool),
 		Miner:                mnr,
 		Nonce:                10,
@@ -40,7 +56,9 @@ func CreateBlock(mnr string) block.Block {
 	h.Write([]byte(string(blockData)))
 	chash = fmt.Sprintf("%x", h.Sum(nil)) //thanks copilot
 	block.CurrHash = chash
-	Blockchain = append(Blockchain, block)
+	blockchain = append(blockchain, block)
 	transactions.Pool = nil
+	bchain, _ := json.MarshalIndent(blockchain, "", "\t")
+	_ = ioutil.WriteFile("blockchain.json", bchain, 0644)
 	return block
 }
