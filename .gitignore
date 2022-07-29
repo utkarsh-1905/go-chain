@@ -1,4 +1,7 @@
-go.sum
 *.exe
 build/
 blockchain.json
+test/
+mempool.json
+validators.json
+mywallet.json

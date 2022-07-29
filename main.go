@@ -8,6 +8,8 @@ import (
 	"github.com/utkarsh-1905/go-chain/transactions"
 )
 
+//this file is the node(host) of the blockchain
+
 func main() {
 	// blockchain.Genesis()
 	transactions.CreateTransaction("utkarsh", "utkarsh", 10, "hello")

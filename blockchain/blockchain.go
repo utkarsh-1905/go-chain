@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"time"
 
 	"github.com/utkarsh-1905/go-chain/block"
+	"github.com/utkarsh-1905/go-chain/helpers"
 	"github.com/utkarsh-1905/go-chain/transactions"
 )
 
@@ -23,24 +23,12 @@ func Genesis() []block.Block {
 }
 
 func GetLatestBlock() block.Block {
-	content, err := ioutil.ReadFile("blockchain.json")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	var blockchain []block.Block
-	_ = json.Unmarshal(content, &blockchain)
+	blockchain := helpers.ReadAndUnmarshallBlockchain()
 	return blockchain[len(blockchain)-1]
 }
 
 func CreateBlock(mnr string) block.Block {
-	content, err := ioutil.ReadFile("blockchain.json")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	var blockchain []block.Block
-	_ = json.Unmarshal(content, &blockchain)
+	blockchain := helpers.ReadAndUnmarshallBlockchain()
 	var chash string
 	block := block.Block{
 		BlockNumber:          (GetLatestBlock().BlockNumber) + 1,

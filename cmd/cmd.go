@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/urfave/cli/v2"
-	"github.com/utkarsh-1905/go-chain/block"
 	"github.com/utkarsh-1905/go-chain/blockchain"
+	"github.com/utkarsh-1905/go-chain/helpers"
 	"github.com/utkarsh-1905/go-chain/transactions"
+	"github.com/utkarsh-1905/go-chain/wallet"
 )
 
 func main() {
@@ -68,10 +67,8 @@ func main() {
 				Name:  "show",
 				Usage: "Show the current Blockchain",
 				Action: func(c *cli.Context) error {
-					bchain, _ := ioutil.ReadFile("blockchain.json")
-					var bch []block.Block
-					_ = json.Unmarshal(bchain, &bch)
-					spew.Dump(bch)
+					blockchain := helpers.ReadAndUnmarshallBlockchain()
+					spew.Dump(blockchain)
 					return nil
 				},
 			},
@@ -95,6 +92,16 @@ func main() {
 						fmt.Println("Block Created")
 						return nil
 					}
+				},
+			},
+			{
+				Name:  "wallet",
+				Usage: "To create a new wallet on chain",
+				Action: func(ctx *cli.Context) error {
+					wallet.GenerateWallet()
+					spew.Dump("Wallet created, check the mywallet.json file in the root folder")
+					spew.Dump("Use the public key for transactions")
+					return nil
 				},
 			},
 		},

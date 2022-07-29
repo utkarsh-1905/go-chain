@@ -10,8 +10,17 @@
 7. Create a feature to view the transactions of a user
 8. Create a feature to view the blocks 
 
+10. Create a block explorer
+
 ---
 
 ### Links
 
 1. [Pos in Go](https://mycoralhealth.medium.com/code-your-own-proof-of-stake-blockchain-in-go-610cd99aa658)
+
+### Notes
+
+* Pos concept:
+    How do we assign proper weights to them based on the number of tokens they staked?
+    We fill our lotteryPool with copies of the validator’s address. They get a copy for each token they’ve staked. So a validator who put in 100 tokens will get 100 entries in the lotteryPool. A validator who only put in 1 token will only get 1 entry.
+    We randomly pick the winner from our lotteryPool and assign their address to lotteryWinner.
