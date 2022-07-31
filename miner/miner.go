@@ -16,6 +16,7 @@ func Stake(amount int, name string) {
 	_ = json.Unmarshal([]byte(content), &wallet)
 	if amount < wallet.Balance {
 		pos.StakePool <- amount
+		defer close(pos.StakePool)
 		wallet.Balance -= amount
 		wl, _ := json.MarshalIndent(wallet, "", "\t")
 		_ = ioutil.WriteFile(name+".json", wl, 0644)
