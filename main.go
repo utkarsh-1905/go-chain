@@ -1,29 +1,26 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"net"
+	"net/http"
 
-	"github.com/utkarsh-1905/go-chain/helpers"
-	"github.com/utkarsh-1905/go-chain/pos"
+	"github.com/gorilla/mux"
+	"github.com/utkarsh-1905/go-chain/miner"
 )
 
 //this file is the node(host) of the blockchain
 
+var StakePool int
+
 func main() {
 
-	server, err := net.Listen("tcp", ":9000")
-	helpers.HandleErr(err)
+	router := mux.NewRouter()
 
-	defer server.Close()
+	router.HandleFunc("/stake", ShowStakePool).Methods("GET")
+	router.HandleFunc("/stake", AddToPool).Methods("POST")
 
-	for {
-		conn, err := server.Accept()
-		helpers.HandleErr(err)
-		go showStakePool(conn)
-	}
-
+	http.ListenAndServe(":9000", router)
 	// blockchain.Genesis()
 	// transactions.CreateTransaction("utkarsh", "utkarsh", 10, "hello")
 	// b1 := blockchain.CreateBlock("utkarsh")
@@ -37,9 +34,12 @@ func main() {
 	// fmt.Println("----------------------------------------------------")
 }
 
-func showStakePool(conn net.Conn) {
-	var total int
-	total += <-pos.StakePool
-	io.WriteString(conn, fmt.Sprint(total))
-	defer conn.Close()
+func ShowStakePool(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func AddToPool(w http.ResponseWriter, r *http.Request) {
+	var data miner.StakeData
+	_ = json.NewDecoder(r.Body).Decode(&data)
+	fmt.Println(data)
 }
