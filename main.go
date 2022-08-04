@@ -3,24 +3,36 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"github.com/utkarsh-1905/go-chain/miner"
 )
 
 //this file is the node(host) of the blockchain
 
-var StakePool int
-
 func main() {
 
-	router := mux.NewRouter()
+	// router := mux.NewRouter()
 
-	router.HandleFunc("/stake", ShowStakePool).Methods("GET")
-	router.HandleFunc("/stake", AddToPool).Methods("POST")
+	var Upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
 
-	http.ListenAndServe(":9000", router)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		Upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+		ws, err := Upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.Print("upgrade failed: ", err)
+			return
+		}
+
+		ws.WriteMessage(1, []byte("Hello"))
+	})
+
+	http.ListenAndServe(":8080", nil)
 	// blockchain.Genesis()
 	// transactions.CreateTransaction("utkarsh", "utkarsh", 10, "hello")
 	// b1 := blockchain.CreateBlock("utkarsh")

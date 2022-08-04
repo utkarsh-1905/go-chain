@@ -21,6 +21,7 @@ func Stake(amount int, name string) {
 	var wallet wallet.Wallet
 	_ = json.Unmarshal([]byte(content), &wallet)
 	wallet.Balance = 100
+	fmt.Println(wallet)
 	if amount < wallet.Balance {
 		body, _ := json.Marshal(StakeData{Amount: amount, PublicId: string(wallet.PublicKey)})
 		http.Post("http://localhost:9000/stake", "application/json", bytes.NewBuffer(body))
