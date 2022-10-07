@@ -58,8 +58,10 @@ func main() {
 				},
 				Usage: "Create a new transaction",
 				Action: func(c *cli.Context) error {
+					if c.String("to") == "" || c.String("from") == "" || c.Int("value") == 0 {
+						return cli.NewExitError("Please provide all the required parameters", 1)
+					}
 					transactions.CreateTransaction(c.String("to"), c.String("from"), c.Int("value"), c.String("data"))
-					fmt.Println("Transaction Created")
 					return nil
 				},
 			},

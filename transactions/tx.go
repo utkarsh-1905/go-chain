@@ -7,10 +7,10 @@ import (
 )
 
 type Transaction struct {
-	To    string `json:"to"`
-	From  string `json:"from"`
-	Value int    `json:"value"`
-	Data  string `json:"data"`
+	To        string `json:"to"`
+	From      string `json:"from"`
+	Value     int    `json:"value"`
+	Data      string `json:"data"`
 }
 
 func Pool() []Transaction {
@@ -43,5 +43,6 @@ func CreateTransaction(to string, from string, value int, data string) Transacti
 		wl, _ := json.MarshalIndent(mempool, "", "\t")
 		_ = ioutil.WriteFile("mempool.json", wl, 0644)
 	}
+	fmt.Println("Transaction created")
 	return tx
 }
