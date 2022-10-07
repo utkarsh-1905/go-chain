@@ -1,16 +1,28 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	"github.com/utkarsh-1905/go-chain/miner"
 )
 
 //this file is the node(host) of the blockchain
+
+func reader(conn *websocket.Conn) {
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		log.Println(string(p))
+		if err := conn.WriteMessage(messageType, p); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
 
 func main() {
 
@@ -19,17 +31,17 @@ func main() {
 	var Upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true },
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		Upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 		ws, err := Upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Print("upgrade failed: ", err)
 			return
 		}
-
 		ws.WriteMessage(1, []byte("Hello"))
+		reader(ws)
 	})
 
 	http.ListenAndServe(":8080", nil)
@@ -50,8 +62,8 @@ func ShowStakePool(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AddToPool(w http.ResponseWriter, r *http.Request) {
-	var data miner.StakeData
-	_ = json.NewDecoder(r.Body).Decode(&data)
-	fmt.Println(data)
-}
+// func AddToPool(w http.ResponseWriter, r *http.Request) {
+// 	var data miner.StakeData
+// 	_ = json.NewDecoder(r.Body).Decode(&data)
+// 	fmt.Println(data)
+// }

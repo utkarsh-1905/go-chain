@@ -7,8 +7,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/utkarsh-1905/go-chain/account"
 	"github.com/utkarsh-1905/go-chain/helpers"
+	"github.com/utkarsh-1905/go-chain/ledger"
 	"github.com/utkarsh-1905/go-chain/transactions"
 )
 
@@ -31,7 +31,7 @@ func GenerateWallet(name string) {
 		PrivateKey: privKey,
 		PublicKey:  pubKey,
 	}
-	account.Initialize(string(pubKey))
+	ledger.Initialize(string(pubKey))
 	wl, _ := json.MarshalIndent(wallet, "", "\t")
 	_ = ioutil.WriteFile(name+".json", wl, 0644)
 }
@@ -46,7 +46,7 @@ func GetPubKey(name string) string {
 
 func GetBalance(name string) int {
 	pubKey := GetPubKey(name)
-	balance := account.GetBalance(pubKey)
+	balance, _ := ledger.GetBalance(pubKey)
 	return balance
 }
 
