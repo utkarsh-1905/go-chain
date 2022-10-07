@@ -17,7 +17,7 @@ func main() {
 	app := &cli.App{
 		Name:    "go-chain",
 		Usage:   "A command line interface for Go-Chain",
-		Version: "0.1.0",
+		Version: "1.1.0",
 		Commands: []*cli.Command{
 			{
 				Name:  "start",

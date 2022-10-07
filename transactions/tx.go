@@ -4,13 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/url"
+
+	"github.com/gorilla/websocket"
 )
 
 type Transaction struct {
-	To        string `json:"to"`
-	From      string `json:"from"`
-	Value     int    `json:"value"`
-	Data      string `json:"data"`
+	To    string `json:"to"`
+	From  string `json:"from"`
+	Value int    `json:"value"`
+	Data  string `json:"data"`
 }
 
 func Pool() []Transaction {
@@ -44,5 +47,15 @@ func CreateTransaction(to string, from string, value int, data string) Transacti
 		_ = ioutil.WriteFile("mempool.json", wl, 0644)
 	}
 	fmt.Println("Transaction created")
+	u := url.URL{Scheme: "ws", Host: "localhost:8080", Path: "/tx"}
+	conn, _, wsserr := websocket.DefaultDialer.Dial(u.String(), nil)
+	if wsserr != nil {
+		panic(wsserr)
+	}
+	werr := conn.WriteJSON(tx)
+	if werr != nil {
+		panic(werr)
+	}
+	defer conn.Close()
 	return tx
 }

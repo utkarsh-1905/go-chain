@@ -4,47 +4,40 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/websocket"
+	"github.com/utkarsh-1905/go-chain/websocket"
 )
 
 //this file is the node(host) of the blockchain
 
-func reader(conn *websocket.Conn) {
-	for {
-		messageType, p, err := conn.ReadMessage()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		log.Println(string(p))
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
+func handleTxOnWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
+	ws, err := websocket.Upgrade(w, r)
+	if err != nil {
+		log.Print("upgrade failed: ", err)
+		return
 	}
+
+	client := &websocket.Client{
+		Conn: ws,
+		Pool: pool,
+		ID:   r.URL.Query().Get("pubKey"),
+	}
+	pool.Register <- client
+	client.Read()
+}
+
+func handleConnection() {
+	txpool := websocket.NewPool()
+	go txpool.Start()
+
+	http.HandleFunc("/tx", func(w http.ResponseWriter, r *http.Request) {
+		handleTxOnWs(txpool, w, r)
+	})
 }
 
 func main() {
-
-	// router := mux.NewRouter()
-
-	var Upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		ws, err := Upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			log.Print("upgrade failed: ", err)
-			return
-		}
-		ws.WriteMessage(1, []byte("Hello"))
-		reader(ws)
-	})
-
+	handleConnection()
 	http.ListenAndServe(":8080", nil)
+
 	// blockchain.Genesis()
 	// transactions.CreateTransaction("utkarsh", "utkarsh", 10, "hello")
 	// b1 := blockchain.CreateBlock("utkarsh")
@@ -56,11 +49,12 @@ func main() {
 	// b2json, _ := json.Marshal(b2)
 	// fmt.Println(string(b2json))
 	// fmt.Println("----------------------------------------------------")
-}
-
-func ShowStakePool(w http.ResponseWriter, r *http.Request) {
 
 }
+
+// func ShowStakePool(w http.ResponseWriter, r *http.Request) {
+
+// }
 
 // func AddToPool(w http.ResponseWriter, r *http.Request) {
 // 	var data miner.StakeData
