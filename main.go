@@ -9,7 +9,11 @@ import (
 
 //this file is the node(host) of the blockchain
 
-func handleTxOnWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
+func pubSub(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
+	if r.URL.Query().Get("pubKey") == "" {
+		w.Write([]byte("pubKey is required"))
+		return
+	}
 	ws, err := websocket.Upgrade(w, r)
 	if err != nil {
 		log.Print("upgrade failed: ", err)
@@ -30,7 +34,7 @@ func handleConnection() {
 	go txpool.Start()
 
 	http.HandleFunc("/tx", func(w http.ResponseWriter, r *http.Request) {
-		handleTxOnWs(txpool, w, r)
+		pubSub(txpool, w, r)
 	})
 }
 
@@ -49,7 +53,6 @@ func main() {
 	// b2json, _ := json.Marshal(b2)
 	// fmt.Println(string(b2json))
 	// fmt.Println("----------------------------------------------------")
-
 }
 
 // func ShowStakePool(w http.ResponseWriter, r *http.Request) {

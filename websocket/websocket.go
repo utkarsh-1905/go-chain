@@ -22,7 +22,6 @@ type Pool struct {
 }
 
 type Message struct {
-	Type int    `json:"type"`
 	Body string `json:"body"`
 }
 
@@ -48,12 +47,13 @@ func (c *Client) Read() {
 	}()
 
 	for {
-		messageType, p, err := c.Conn.ReadMessage()
+		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		message := Message{Type: messageType, Body: string(p)}
+		fmt.Println(p)
+		message := Message{Body: string(p)}
 		c.Pool.Broadcast <- message
 		fmt.Printf("Message Received: %+v\n", message)
 	}
@@ -76,8 +76,7 @@ func (pool *Pool) Start() {
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client := range pool.Clients {
 				client.Conn.WriteJSON(Message{
-					Type: 1,
-					Body: client.ID + "Joined",
+					Body: client.ID + " Joined",
 				})
 				break
 			}
@@ -86,8 +85,7 @@ func (pool *Pool) Start() {
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client := range pool.Clients {
 				client.Conn.WriteJSON(Message{
-					Type: 1,
-					Body: client.ID + "Disconnected",
+					Body: client.ID + " Disconnected",
 				})
 				break
 			}

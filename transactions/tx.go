@@ -16,6 +16,11 @@ type Transaction struct {
 	Data  string `json:"data"`
 }
 
+type WSSResponse struct {
+	Transaction Transaction `json:"transaction"`
+	ID          int         `json:"id"`
+}
+
 func Pool() []Transaction {
 	content, err := ioutil.ReadFile("mempool.json")
 	if err != nil {
@@ -47,15 +52,18 @@ func CreateTransaction(to string, from string, value int, data string) Transacti
 		_ = ioutil.WriteFile("mempool.json", wl, 0644)
 	}
 	fmt.Println("Transaction created")
-	u := url.URL{Scheme: "ws", Host: "localhost:8080", Path: "/tx"}
+	u := url.URL{Scheme: "ws", Host: "localhost:8080", Path: "/tx", RawQuery: "pubKey=" + from}
 	conn, _, wsserr := websocket.DefaultDialer.Dial(u.String(), nil)
 	if wsserr != nil {
 		panic(wsserr)
 	}
-	werr := conn.WriteJSON(tx)
+	res := WSSResponse{tx, 2}
+	werr := conn.WriteJSON(res)
 	if werr != nil {
 		panic(werr)
 	}
 	defer conn.Close()
 	return tx
 }
+
+func SyncTransaction() {}
